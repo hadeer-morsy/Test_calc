@@ -45,7 +45,7 @@ def calculate():
     note = "Successful"
   elif operation == "div":
     result = calculator.div(first_number, second_number)
-    note = result  # Set note to the result (error message or calculated value)
+    note = "result"  # Set note to the result (error message or calculated value)
   else:
     result = None
     note = "Invalid operation"
