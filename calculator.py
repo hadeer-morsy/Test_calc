@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, url_for
-
+import json
 app = Flask(__name__)
 
 class Calculator:
@@ -21,9 +21,33 @@ class Calculator:
         else:
             return a / b
 
+def get_visit_count():
+    """Reads the visit count from visits.json."""
+    try:
+      with open('visits.json', 'r') as f:
+          data = json.load(f)
+          return data['visit_count']
+    except (FileNotFoundError, json.JSONDecodeError):
+	    # Handle cases where the file doesn't exist or is corrupt
+      return 0
+	
+def update_visit_count(count):
+  """Writes the updated visit count to visits.json."""
+  with open('visits.json', 'w') as f:
+    json.dump({'visit_count': count}, f)
+	
 @app.route("/", methods=["GET"])
 def main():
-  return render_template("index.html")
+  visit_count = get_visit_count()
+  visit_count += 1
+  update_visit_count(visit_count)
+  return render_template("index.html", visit_count=visit_count)
+	
+@app.route("/visits", methods=["GET"])
+def get_visits():
+  visit_count = get_visit_count()
+  data = {'visit_count': visit_count}  # Create a dictionary with visit count
+  return json.dumps(data)  # Return JSON data
 
 @app.route("/calculate", methods=["POST"])
 def calculate():
@@ -53,7 +77,7 @@ def calculate():
   return render_template("index.html", result=result, note=note)
 
 if __name__ == "__main__":
-  app.run(debug=True)
+  app.run('0.0.0.0', 5000, 50001)
 
 
 
