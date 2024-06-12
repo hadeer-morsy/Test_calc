@@ -13,3 +13,9 @@ pip3 install flask
 ```bash
 pip install -r requirements.txt
 ```
+
+## Docker
+
+```bash
+docker-compose build && docker-compose up
+```
